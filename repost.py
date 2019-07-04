@@ -1,3 +1,16 @@
+import praw
+import config 
+
+#Logs into reddit with the details in config.py
+def login():
+    print("Trying to log in...")
+    reddit = praw.Reddit(username = config.username,
+            password = config.password,
+            client_id = config.client_id,
+            client_secret = config.client_secret,
+            user_agent = config.user_agent)
+    print("Logged in!")
+    return reddit
 
 def print_options():
     print("Select one of the following options:")
