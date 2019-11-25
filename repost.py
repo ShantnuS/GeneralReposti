@@ -27,6 +27,9 @@ def repost_random():
     subreddit = "test"
     return subreddit
 
+def get_posts(reddit, sub):
+    return reddit.subreddit(sub).top('month', limit=5)
+
 def main():
     reddit = login()
     options = [repost_specific, repost_random]
@@ -34,14 +37,20 @@ def main():
     print_options()
     selected_option = int(input(": "))-1
     sub = options[selected_option]()
-    submissions = reddit.subreddit(sub).top('month', limit=5)
+    submissions = get_posts(reddit, sub)
     rando = random.randrange(1,5,1)
     repost = list(submissions)[rando]
-    
+
+    count = 1
     while repost.is_self:
         rando = random.randrange(1,5,1)
-        repost = submissions[rando]
+        repost = list(submissions)[rando]
+        count = count + 1
+        if count == 5:
+            submissions = get_posts(reddit, sub)
+            count = 1
     
+    print("Posting \"%s\" to %s" % (repost.title, sub))
     reddit.subreddit(sub).submit(title=repost.title, url=repost.url)
 
 if __name__ == "__main__":main()
