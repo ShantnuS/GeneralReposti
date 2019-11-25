@@ -1,5 +1,6 @@
 import praw
 import config 
+import random
 
 #Logs into reddit with the details in config.py
 def login():
@@ -20,18 +21,27 @@ def print_options():
 def repost_specific():
     print("Enter a subreddit name: ")
     subreddit = input(": ")
-    print(subreddit)
+    return subreddit
 
 def repost_random():
-    subreddit = "aww"
-    print(subreddit)
+    subreddit = "test"
+    return subreddit
 
 def main():
+    reddit = login()
     options = [repost_specific, repost_random]
 
     print_options()
     selected_option = int(input(": "))-1
-    options[selected_option]()
-
+    sub = options[selected_option]()
+    submissions = reddit.subreddit(sub).top('month', limit=5)
+    rando = random.randrange(1,5,1)
+    repost = list(submissions)[rando]
+    
+    while repost.is_self:
+        rando = random.randrange(1,5,1)
+        repost = submissions[rando]
+    
+    reddit.subreddit(sub).submit(title=repost.title, url=repost.url)
 
 if __name__ == "__main__":main()
